@@ -1,0 +1,59 @@
+
+.container{
+  padding-top: 80px;
+}
+
+.row{
+  
+  border-bottom: solid pink;
+
+  display: flex;
+  width: 300px;
+  height: 100px;
+  place-items: center;
+  margin:auto;
+}
+
+.row :first-child{
+  border-left: none;
+  }
+
+.column{
+  
+ border-left: solid pink;
+  width:100px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative
+}
+
+
+
+p{
+  font-weight: bold;
+  font-size:300%;
+  color:fuchsia
+}
+
+
+
+
+/*.column::after {
+  content: "";
+  position: absolute;
+  top: -20px;   /* Extiende el borde más allá del contenedor hacia arriba */
+  /*bottom: -30px; /* Extiende el borde más allá del contenedor hacia abajo */
+  /*right: 0;
+  border: solid pink;   /* Anchura del borde adicional */
+  
+
+/*
+
+
+
+
+
+
+
