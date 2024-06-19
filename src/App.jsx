@@ -3,79 +3,122 @@ import "./App.css";
 
 function App() {
   const board = [
-    [
-      { id: 1, value: "" },
-      { id: 2, value: "" },
-      { id: 3, value: "" },
-    ],
-    [
-      { id: 4, value: "" },
-      { id: 5, value: "" },
-      { id: 6, value: "" },
-    ],
-    [
-      { id: 7, value: "" },
-      { id: 8, value: "" },
-      { id: 9, value: "" },
-    ],
+    [ { id: 1, value: "" },{ id: 2, value: "" },{ id: 3, value: "" }, ],
+    [ { id: 4, value: "" },{ id: 5, value: "" },{ id: 6, value: "" },],
+    [ { id: 7, value: "" },{ id: 8, value: "" },{ id: 9, value: "" }, ],
   ];
+
 
   const [turn, setTurn] = useState(true);
   const [boardGame, setBoardGame] = useState(board);
   const [position, setPosition] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9]);
-console.log('POSITION', position)
-console.log('TURNO', turn)
+  console.log("POSITION", position);
+  //console.log("TURNO", turn);
+  
 
   const playUserFuction = (element, index, keyValue) => {
-    console.log('ELEMENT.ID', element.id)
     const modifiedBoard = [...boardGame];
-    //console.log("modifiedBOARD", modifiedBoard);
-    //console.log("index", index);
-    //console.log("keyvalue", keyValue);
-
-    if (turn) {
-      if (modifiedBoard[index][keyValue].value === "") {
-        modifiedBoard[index][keyValue].value = "X";
-        const availablePositions = position.filter((item) => item !== element.id)
-        setPosition(availablePositions);
-        setTurn(false);
+    if (position.length === 0) {
+      alert("EMPATE");
+      setPosition([1,2,3,4,5,6,7,8,9])
+      setBoardGame(board);
+      setTurn(true)
+    } else {
+      if (turn) {
+        if (modifiedBoard[index][keyValue].value !== "X") {
+          modifiedBoard[index][keyValue].value = "X";
+          const availablePositions = position.filter( (item) => item !== element.id );
+          setPosition(availablePositions);
+          setTurn(false);
+        }
       }
+      return setBoardGame(modifiedBoard);
+    }
+  };
+
+  const playCpuFunction = () => {
+    const modifiedBoard = [...boardGame];
+    const ramdomNumber = Math.floor(Math.random() * position.length);
+    console.log("ramdonNUMBER", ramdomNumber);
+    const randomId = position[ramdomNumber];
+    console.log("randomId", randomId);
+
+    const findingIndexAndKeyValue = (arrays, randomId) => {
+      for (let i = 0; i < arrays.length; i++) {
+        for (let j = 0; j < arrays[i].length; j++) {
+          if (arrays[i][j].id === randomId) {
+            return { arrayIndex: i, elementIndex: j };
+          }
+        }
+      }
+    };
+
+    const indexandKeyValue = findingIndexAndKeyValue(boardGame, randomId);
+    console.log("indexandKEY", indexandKeyValue);
+    setTurn(true);
+    const index = indexandKeyValue.arrayIndex;
+    const keyValue = indexandKeyValue.elementIndex;
+    //console.log("index", index);
+    //console.log("keyValue", keyValue);
+
+    if (modifiedBoard[index][keyValue].value !== "O") {
+      modifiedBoard[index][keyValue].value = "O";
+      const availablePositions = position.filter((item) => item !== randomId);
+      setTurn(true);
+      setPosition(availablePositions);
     }
     return setBoardGame(modifiedBoard);
   };
 
-  const playCpuFunction = () => {
-    //const modifiedBoard = [...boardGame];
-      const ramdomPosition = Math.floor(Math.random()* position.length)
-      console.log('ramdomPosition', ramdomPosition)
+  const winner = (boardGame) => {
+ 
+ 
+    const winningCombinations =[
 
-      const findingIndexAndKeyValue= (arrays, ramdomPosition) => {
-        for (let i = 0; i < arrays.length; i++) {
-          for (let j = 0; j < arrays[i].length; j++) {
-            if (arrays[i][j].id === ramdomPosition) {
-              return { arrayIndex: i, elementIndex: j };
-            }
-          }
-        }
-      };
+      //filas
+  [[0, 0], [0, 1], [0, 2]],
+  [[1, 0], [1, 1], [1, 2]],
+  [[2, 0], [2, 1], [2, 2]],
+  // Columnas
+  [[0, 0], [1, 0], [2, 0]],
+  [[0, 1], [1, 1], [2, 1]],
+  [[0, 2], [1, 2], [2, 2]],
+  // Diagonales
+  [[0, 0], [1, 1], [2, 2]],
+  [[0, 2], [1, 1], [2, 0]]
+ ]
+for (let combination of winningCombinations){
+ const [a,b,c] = combination
+    const cellA = boardGame[a[0]][a[1]].value;
+    const cellB = boardGame[b[0]][b[1]].value;
+    const cellC = boardGame[c[0]][c[1]].value
 
-      const index = findingIndexAndKeyValue(boardGame,ramdomPosition)
-      console.log('index', index)
+    if (cellA && cellA === cellB && cellA === cellC) {
+      return cellA; // Devuelve 'X' o 'O'
+    }
 
-     /* if (modifiedBoard[index][keyValue] === "") {
-        modifiedBoard[index][keyValue].value = "O";
-        const availablePositions = position.filter((item) => item == !element.id);
-        setPosition(availablePositions);
-      }*/
-    
+}
+
+ return null
+
   };
 
-
   useEffect(() => {
-    if(turn === false){
-      playCpuFunction()
+    let theWinner = winner(boardGame)
+    if(theWinner){
+      alert(`The winner is ${theWinner}`)
+      setPosition([1,2,3,4,5,6,7,8,9])
+      setBoardGame(board)
+      setTurn(true)
     }
-    }, [turn]);
+    else{
+      if(!turn && position.length>0){
+        playCpuFunction()
+      }
+
+    }
+    ;
+  }, [boardGame]);
 
   return (
     <>
